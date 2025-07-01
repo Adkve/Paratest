@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom font-family for Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center p-4">
+
+    <!-- Main Container -->
+    <div id="app-container" class="w-full h-full flex items-center justify-center">
+
+        <!-- Login Page (Initially visible) -->
+        <div id="login-page" class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md transform transition-all duration-300 hover:scale-105">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Login</h2>
+            <form id="login-form">
+                <div class="mb-6">
+                    <label for="username" class="block text-gray-700 text-sm font-semibold mb-2">
+                        Username:
+                    </label>
+                    <input
+                        type="text"
+                        id="username"
+                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                        required
+                    />
+                </div>
+                <div class="mb-6">
+                    <label for="password" class="block text-gray-700 text-sm font-semibold mb-2">
+                        Password:
+                    </label>
+                    <input
+                        type="password"
+                        id="password"
+                        class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+                        required
+                    />
+                </div>
+                <p id="error-message" class="text-red-600 text-sm text-center mb-4 hidden"></p>
+                <button
+                    type="submit"
+                    class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                    Login
+                </button>
+            </form>
+        </div>
+
+        <!-- Dashboard Page (Initially hidden) -->
+        <div id="dashboard-page" class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-4xl transform transition-all duration-300 hover:scale-105 hidden">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800">Dashboard</h2>
+                <button
+                    id="logout-button"
+                    class="bg-red-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-600 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                >
+                    Logout
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Mock 1 Card -->
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md flex flex-col items-center text-center transform transition-all duration-300 hover:shadow-xl hover:scale-105">
+                    <img
+                        src="https://github.com/Adkve/Paratest/blob/main/Mock1image.jpg?raw=true"
+                        alt="Mock 1"
+                        class="w-full h-auto rounded-lg mb-4 object-cover"
+                        onerror="this.onerror=null;this.src='https://placehold.co/200x150/E0E7FF/4F46E5?text=Mock+1+Image+Error';"
+                    />
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Mock 1</h3>
+                    <p class="text-gray-600 mb-4">"The only way to do great work is to love what you do."</p>
+                    <button
+                        class="mock-button bg-green-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-600 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                        data-link="https://adkve.github.io/mock1para/"
+                    >
+                        Open Mock 1
+                    </button>
+                </div>
+
+                <!-- Mock 2 Card -->
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md flex flex-col items-center text-center transform transition-all duration-300 hover:shadow-xl hover:scale-105">
+                    <img
+                        src="https://github.com/Adkve/Paratest/blob/main/Mock2img.jpg?raw=true"
+                        alt="Mock 2"
+                        class="w-full h-auto rounded-lg mb-4 object-cover"
+                        onerror="this.onerror=null;this.src='https://placehold.co/200x150/FFFBEB/D97706?text=Mock+2+Image+Error';"
+                    />
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Mock 2</h3>
+                    <p class="text-gray-600 mb-4">"Strive not to be a success, but rather to be of value."</p>
+                    <button
+                        class="mock-button bg-yellow-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-yellow-600 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
+                        data-link="https://adkve.github.io/mock2para/"
+                    >
+                        Open Mock 2
+                    </button>
+                </div>
+
+                <!-- Mock 3 Card -->
+                <div class="bg-gray-50 p-6 rounded-lg shadow-md flex flex-col items-center text-center transform transition-all duration-300 hover:shadow-xl hover:scale-105">
+                    <img
+                        src="https://github.com/Adkve/Paratest/blob/main/Mock3ima.jpg?raw=true"
+                        alt="Mock 3"
+                        class="w-full h-auto rounded-lg mb-4 object-cover"
+                        onerror="this.onerror=null;this.src='https://placehold.co/200x150/FEE2E2/EF4444?text=Mock+3+Image+Error';"
+                    />
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Mock 3</h3>
+                    <p class="text-gray-600 mb-4">"The future belongs to those who believe in the beauty of their dreams."</p>
+                    <button
+                        class="mock-button bg-red-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-600 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                        data-link="https://adkve.github.io/mock3par/"
+                    >
+                        Open Mock 3
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get references to HTML elements
+        const loginPage = document.getElementById('login-page');
+        const dashboardPage = document.getElementById('dashboard-page');
+        const loginForm = document.getElementById('login-form');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const errorMessageDisplay = document.getElementById('error-message');
+        const logoutButton = document.getElementById('logout-button');
+        const mockButtons = document.querySelectorAll('.mock-button'); // Select all buttons with class 'mock-button'
+
+        // State variables (mimicking React's useState)
+        let isLoggedIn = false;
+        let username = '';
+        let password = '';
+        let errorMessage = '';
+
+        /**
+         * Renders the correct page (login or dashboard) based on the isLoggedIn state.
+         * Updates the visibility of the login and dashboard sections.
+         */
+        function renderPage() {
+            if (isLoggedIn) {
+                loginPage.classList.add('hidden');
+                dashboardPage.classList.remove('hidden');
+            } else {
+                loginPage.classList.remove('hidden');
+                dashboardPage.classList.add('hidden');
+            }
+        }
+
+        /**
+         * Handles the login form submission.
+         * Checks hardcoded credentials and updates the isLoggedIn state.
+         * @param {Event} e - The form submission event.
+         */
+        function handleLogin(e) {
+            e.preventDefault(); // Prevent default form submission behavior (page reload)
+
+            // Get current input values
+            username = usernameInput.value;
+            password = passwordInput.value;
+
+            // Hardcoded credentials for demonstration
+            // Updated username and password
+            if (username === 'medicoanjalipara13july' && password === 'anjali123#130725') {
+                isLoggedIn = true;
+                errorMessage = ''; // Clear any previous error message
+            } else {
+                isLoggedIn = false;
+                errorMessage = 'Incorrect username or password.';
+            }
+
+            // Update error message display
+            if (errorMessage) {
+                errorMessageDisplay.textContent = errorMessage;
+                errorMessageDisplay.classList.remove('hidden');
+            } else {
+                errorMessageDisplay.classList.add('hidden');
+            }
+
+            renderPage(); // Re-render the page based on the new state
+        }
+
+        /**
+         * Handles the logout action.
+         * Resets state variables and switches back to the login page.
+         */
+        function handleLogout() {
+            isLoggedIn = false;
+            username = '';
+            password = '';
+            errorMessage = '';
+
+            // Clear input fields
+            usernameInput.value = '';
+            passwordInput.value = '';
+
+            // Hide error message
+            errorMessageDisplay.classList.add('hidden');
+
+            renderPage(); // Re-render the page based on the new state
+        }
+
+        /**
+         * Handles clicks on the mock buttons in the dashboard.
+         * Opens the specified link in a new tab.
+         * @param {Event} e - The click event.
+         */
+        function handleButtonClick(e) {
+            const link = e.target.dataset.link; // Get the link from the data-link attribute
+            if (link) {
+                window.open(link, '_blank'); // Open the URL in a new tab
+            }
+        }
+
+        // Add event listeners
+        loginForm.addEventListener('submit', handleLogin);
+        logoutButton.addEventListener('click', handleLogout);
+
+        // Add event listeners to all mock buttons
+        mockButtons.forEach(button => {
+            button.addEventListener('click', handleButtonClick);
+        });
+
+        // Initial render when the page loads
+        document.addEventListener('DOMContentLoaded', renderPage);
+    </script>
+</body>
+</html>
