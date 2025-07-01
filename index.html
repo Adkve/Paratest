@@ -13,6 +13,33 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+        /* Custom modal styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); /* shadow-2xl */
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+        }
+        /* Styling for disabled buttons */
+        .mock-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center p-4">
@@ -80,11 +107,13 @@
                     <h3 class="text-xl font-semibold text-gray-800 mb-3">Mock 1</h3>
                     <p class="text-gray-600 mb-4">"The only way to do great work is to love what you do."</p>
                     <button
-                        class="mock-button bg-green-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-600 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                        class="mock-button bg-green-500 text-white py-2 px-4 rounded-lg font-semibold transition duration-300 transform focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                         data-link="https://adkve.github.io/mock1para/"
+                        data-unlock-date="2025-07-07T12:00:00"
                     >
                         Open Mock 1
                     </button>
+                    <div class="text-sm text-red-600 font-bold mt-2 countdown-display" id="countdown-mock1"></div>
                 </div>
 
                 <!-- Mock 2 Card -->
@@ -98,11 +127,13 @@
                     <h3 class="text-xl font-semibold text-gray-800 mb-3">Mock 2</h3>
                     <p class="text-gray-600 mb-4">"Strive not to be a success, but rather to be of value."</p>
                     <button
-                        class="mock-button bg-yellow-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-yellow-600 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
+                        class="mock-button bg-yellow-500 text-white py-2 px-4 rounded-lg font-semibold transition duration-300 transform focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
                         data-link="https://adkve.github.io/mock2para/"
+                        data-unlock-date="2025-07-09T12:00:00"
                     >
                         Open Mock 2
                     </button>
+                    <div class="text-sm text-red-600 font-bold mt-2 countdown-display" id="countdown-mock2"></div>
                 </div>
 
                 <!-- Mock 3 Card -->
@@ -116,13 +147,28 @@
                     <h3 class="text-xl font-semibold text-gray-800 mb-3">Mock 3</h3>
                     <p class="text-gray-600 mb-4">"The future belongs to those who believe in the beauty of their dreams."</p>
                     <button
-                        class="mock-button bg-red-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-600 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                        class="mock-button bg-red-500 text-white py-2 px-4 rounded-lg font-semibold transition duration-300 transform focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                         data-link="https://adkve.github.io/mock3par/"
+                        data-unlock-date="2025-07-11T12:00:00"
                     >
                         Open Mock 3
                     </button>
+                    <div class="text-sm text-red-600 font-bold mt-2 countdown-display" id="countdown-mock3"></div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Custom Message Box/Modal -->
+    <div id="message-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <p id="modal-message" class="text-gray-800 text-lg mb-6"></p>
+            <button
+                id="modal-close-button"
+                class="bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+                OK
+            </button>
         </div>
     </div>
 
@@ -136,12 +182,34 @@
         const errorMessageDisplay = document.getElementById('error-message');
         const logoutButton = document.getElementById('logout-button');
         const mockButtons = document.querySelectorAll('.mock-button'); // Select all buttons with class 'mock-button'
+        const countdownDisplays = document.querySelectorAll('.countdown-display'); // Select all countdown display elements
+
+        // Message Modal elements
+        const messageModal = document.getElementById('message-modal');
+        const modalMessage = document.getElementById('modal-message');
+        const modalCloseButton = document.getElementById('modal-close-button');
 
         // State variables (mimicking React's useState)
         let isLoggedIn = false;
         let username = '';
         let password = '';
         let errorMessage = '';
+
+        /**
+         * Displays a custom message in a modal.
+         * @param {string} messageText - The message to display.
+         */
+        function showMessage(messageText) {
+            modalMessage.textContent = messageText;
+            messageModal.classList.remove('hidden');
+        }
+
+        /**
+         * Hides the custom message modal.
+         */
+        function hideMessage() {
+            messageModal.classList.add('hidden');
+        }
 
         /**
          * Renders the correct page (login or dashboard) based on the isLoggedIn state.
@@ -151,6 +219,7 @@
             if (isLoggedIn) {
                 loginPage.classList.add('hidden');
                 dashboardPage.classList.remove('hidden');
+                initializeCountdowns(); // Start countdowns when dashboard is shown
             } else {
                 loginPage.classList.remove('hidden');
                 dashboardPage.classList.add('hidden');
@@ -170,7 +239,6 @@
             password = passwordInput.value;
 
             // Hardcoded credentials for demonstration
-            // Updated username and password
             if (username === 'medicoanjalipara13july' && password === 'anjali123#130725') {
                 isLoggedIn = true;
                 errorMessage = ''; // Clear any previous error message
@@ -212,19 +280,96 @@
 
         /**
          * Handles clicks on the mock buttons in the dashboard.
-         * Opens the specified link in a new tab.
+         * Opens the specified link in a new tab if the unlock date has passed.
          * @param {Event} e - The click event.
          */
         function handleButtonClick(e) {
-            const link = e.target.dataset.link; // Get the link from the data-link attribute
-            if (link) {
-                window.open(link, '_blank'); // Open the URL in a new tab
+            const link = e.target.dataset.link;
+            const unlockDateString = e.target.dataset.unlockDate;
+
+            if (link && unlockDateString) {
+                const unlockDate = new Date(unlockDateString);
+                const currentDate = new Date();
+
+                // Compare full timestamps, including time
+                if (currentDate.getTime() >= unlockDate.getTime()) {
+                    window.open(link, '_blank'); // Open the URL in a new tab
+                } else {
+                    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+                    const formattedUnlockDate = unlockDate.toLocaleDateString('en-US', options);
+                    showMessage(`This mock will open on ${formattedUnlockDate}.`);
+                }
             }
+        }
+
+        /**
+         * Starts a countdown timer for a given mock button.
+         * @param {HTMLElement} buttonElement - The button element.
+         * @param {HTMLElement} countdownDisplayElement - The element to display the countdown.
+         * @param {string} unlockDateString - The unlock date string (YYYY-MM-DDTHH:MM:SS).
+         */
+        function startCountdown(buttonElement, countdownDisplayElement, unlockDateString) {
+            const unlockDate = new Date(unlockDateString);
+
+            const updateCountdown = () => {
+                const now = new Date().getTime();
+                const distance = unlockDate.getTime() - now;
+
+                if (distance < 0) {
+                    // Test is live
+                    countdownDisplayElement.textContent = 'Test is live!';
+                    buttonElement.removeAttribute('disabled');
+                    buttonElement.classList.add('hover:scale-105'); // Re-add hover effects
+                    // Clear interval if test is live
+                    if (buttonElement.countdownInterval) {
+                        clearInterval(buttonElement.countdownInterval);
+                    }
+                    return;
+                }
+
+                // Calculate days, hours, minutes, seconds
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                let countdownText = '';
+                if (days > 0) {
+                    countdownText += `${days} days `;
+                }
+                countdownText += `${hours} hours ${minutes} minutes ${seconds} seconds`;
+                countdownDisplayElement.textContent = `Live in: ${countdownText}`;
+
+                // Disable button if not live yet
+                buttonElement.setAttribute('disabled', 'true');
+                buttonElement.classList.remove('hover:scale-105'); // Remove hover effects when disabled
+            };
+
+            // Initial call
+            updateCountdown();
+
+            // Update every second
+            buttonElement.countdownInterval = setInterval(updateCountdown, 1000);
+        }
+
+        /**
+         * Initializes countdowns for all mock buttons.
+         */
+        function initializeCountdowns() {
+            mockButtons.forEach((button, index) => {
+                const unlockDateString = button.dataset.unlockDate;
+                const countdownDisplayElement = countdownDisplays[index]; // Get corresponding countdown display element
+
+                if (unlockDateString && countdownDisplayElement) {
+                    startCountdown(button, countdownDisplayElement, unlockDateString);
+                }
+            });
         }
 
         // Add event listeners
         loginForm.addEventListener('submit', handleLogin);
         logoutButton.addEventListener('click', handleLogout);
+        modalCloseButton.addEventListener('click', hideMessage); // Close modal on OK button click
 
         // Add event listeners to all mock buttons
         mockButtons.forEach(button => {
